@@ -10,11 +10,11 @@ public class ReadEntry {
 	private String entry = "";
 	private Map<Integer, String> entries = new TreeMap<>();
 	private int count;
-	
+
 	public Map<Integer, String> readEntry() {
-		 
+
 		count = 0;
-		
+
 		try (FileReader fr = new FileReader(PATH_TO_DB)) {
 
 			int c;
@@ -51,22 +51,23 @@ public class ReadEntry {
 		return entries;
 
 	}
-	
+
 	public void setEntries(int index, String value) {
-		
+
 		entries.put(index, value);
-		
+
 	}
 
 	public String getNormalText(int index) {
 
 		String gentry = entries.get(index);
 		String tmp = "";
-		final Pattern pattern = Pattern.compile("</h1>(.+?)<create>");
+		final Pattern pattern = Pattern.compile("(?<=</h1>)(.*)(?=<create>)");
 		final Matcher matcher = pattern.matcher(gentry);
-		matcher.find();
 
-		tmp = matcher.group(1);
+		if (matcher.find()) {
+			tmp = matcher.group(1);
+		}
 
 		return tmp;
 
