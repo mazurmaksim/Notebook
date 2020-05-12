@@ -5,23 +5,47 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class WriteEntry {
 
-	public void writeEntry(String str, String caption) {
+	private final static String FILEPATH = "lib\\db.bin";
 
-		String filePath = "lib\\db.bin";
-		Date today = Calendar.getInstance().getTime();
-		String outPut = "\n" + "<p><h1>" + caption + "</h1>" + str + "<create>" + today + "</create></p>";
+	public void writeMap(Map<Integer, String> entrie) {
+		String tmp = "";
+
+		for (Map.Entry<Integer, String> str : entrie.entrySet()) {
+
+			tmp += str.getValue();
+
+		}
 
 		try {
-
-			Files.write(Paths.get(filePath), outPut.getBytes(), StandardOpenOption.APPEND);
+			Files.write(Paths.get(FILEPATH), tmp.getBytes());
 
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
+
+		System.out.println("Remove Successful");
+
+	}
+
+	public void writeEntry(String str, String caption) {
+
+		Date today = Calendar.getInstance().getTime();
+		String outPut = "\n" + "<p><h1>" + caption + "</h1>" + str + "<create>" + today + "</create></p>";
+
+		try {
+
+			Files.write(Paths.get(FILEPATH), outPut.getBytes(), StandardOpenOption.APPEND);
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
 		System.out.println("Write Successful");
 
 	}
