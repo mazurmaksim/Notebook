@@ -62,7 +62,7 @@ public class ReadEntry {
 
 		String gentry = entries.get(index);
 		String tmp = "";
-		final Pattern pattern = Pattern.compile("(?<=</h1>)(.*)(?=<create>)");
+		final Pattern pattern = Pattern.compile("(?<=<\\/[Hh][1]>)([\\s\\S]*?)(?=<[Cc][Rr][Ee][Aa][Tt][Ee]>)");
 		final Matcher matcher = pattern.matcher(gentry);
 
 		if (matcher.find()) {
