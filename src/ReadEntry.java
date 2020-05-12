@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReadEntry {
 
@@ -8,7 +10,6 @@ public class ReadEntry {
 	private String entry = "";
 	private int count = 0;
 	private Map<Integer, String> entries = new TreeMap<>();
-	// private Map<Integer, String> entriesOutPut = new TreeMap<>();
 
 	public Map<Integer, String> readEntry() {
 
@@ -43,15 +44,44 @@ public class ReadEntry {
 
 	}
 
-	public String EntryOutput() {// return String With date format and caption
-
-		return "";
-
-	}
-
 	public Map<Integer, String> getEntries() {
 
 		return entries;
+
+	}
+
+	public void editEtrie(int index, String text) {
+		
+		entries.put(index, text);
+		
+		
+	}
+	
+	public String getNormalText(int index) {
+
+		String gentry = entries.get(index);
+		String tmp = "";
+		final Pattern pattern = Pattern.compile("</h1>(.+?)<create>");
+		final Matcher matcher = pattern.matcher(gentry);
+		matcher.find();
+
+		tmp = matcher.group(1);
+
+		return tmp;
+
+	}
+
+	public String getCreateDate(int index) {
+
+		String gentry = entries.get(index);
+		String tmp = "";
+		final Pattern pattern = Pattern.compile("<create>(.+?)</create>");
+		final Matcher matcher = pattern.matcher(gentry);
+		matcher.find();
+
+		tmp = matcher.group(1);
+
+		return tmp;
 
 	}
 

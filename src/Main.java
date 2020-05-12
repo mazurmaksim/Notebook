@@ -5,9 +5,10 @@ public class Main {
 		// TODO Auto-generated method stub
 		ReadEntry rdEntr =  new ReadEntry();
 		RemoveEntry rmEntry = new RemoveEntry();
+		window wind = new window();
 		
-		rdEntr.readEntry();
-		rmEntry.removeEntry(0);
+		//rdEntr.readEntry();
+		//rmEntry.removeEntry(0);
 		
 	}
 

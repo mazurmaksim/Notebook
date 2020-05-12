@@ -28,10 +28,11 @@ public class WriteEntry {
 			e.printStackTrace();
 		}
 
-		System.out.println("Remove Successful");
+		System.out.println("Map Write Successful");
 
 	}
 
+	
 	public void writeEntry(String str, String caption) {
 
 		Date today = Calendar.getInstance().getTime();
@@ -53,6 +54,6 @@ public class WriteEntry {
 	public static void main(String[] args) {
 
 		WriteEntry we = new WriteEntry();
-		we.writeEntry("Hello, my name is Maksim Mazur", "Entry MyName is");
+		we.writeEntry("Сегодня не забыть сделать с детьми уроки", "Уроки с детьми");
 	}
 }
