@@ -32,11 +32,20 @@ public class WriteEntry {
 
 	}
 
+
+	public String coverText(String caption, String text) {
+		
+		Date today = Calendar.getInstance().getTime();
+		return "<p><h1>" + caption + "</h1>" + text + "<create>" + today + "</create></p>";
+
+		
+		
+	}
 	
 	public void writeEntry(String str, String caption) {
 
 		Date today = Calendar.getInstance().getTime();
-		String outPut = "\n" + "<p><h1>" + caption + "</h1>" + str + "<create>" + today + "</create></p>";
+		String outPut ="<p><h1>" + caption + "</h1>" + str + "<create>" + today + "</create></p>" + "\n";
 
 		try {
 
@@ -54,6 +63,11 @@ public class WriteEntry {
 	public static void main(String[] args) {
 
 		WriteEntry we = new WriteEntry();
-		we.writeEntry("Сегодня не забыть сделать с детьми уроки", "Уроки с детьми");
+		we.writeEntry("Убрать всю територию за гаражами", "День уборки");
+		we.writeEntry("Забрать холодильник и отнести на 10 етаж", "Забрать холодильник");
+		we.writeEntry("Ехать за город на рыбалку", "Если хорошая погода");
+		we.writeEntry("Переделать все программы", "Куча дел");
+		we.writeEntry("У лукоморья дуб зеленый", "Выучить стих");
+		we.writeEntry("Список покупок", "Покупки");
 	}
 }

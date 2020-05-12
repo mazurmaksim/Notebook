@@ -8,11 +8,13 @@ public class ReadEntry {
 	private static final String MARKEREND = "</p>";
 	private static final String PATH_TO_DB = "lib\\db.bin";
 	private String entry = "";
-	private int count = 0;
 	private Map<Integer, String> entries = new TreeMap<>();
-
+	private int count;
+	
 	public Map<Integer, String> readEntry() {
-
+		 
+		count = 0;
+		
 		try (FileReader fr = new FileReader(PATH_TO_DB)) {
 
 			int c;
@@ -49,14 +51,13 @@ public class ReadEntry {
 		return entries;
 
 	}
-
-	public void editEtrie(int index, String text) {
+	
+	public void setEntries(int index, String value) {
 		
-		entries.put(index, text);
-		
+		entries.put(index, value);
 		
 	}
-	
+
 	public String getNormalText(int index) {
 
 		String gentry = entries.get(index);

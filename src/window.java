@@ -7,6 +7,7 @@ import java.util.*;
 import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.JList;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
@@ -20,6 +21,7 @@ public class window {
 	private JFrame frame;
 	private ReadEntry rdEntr;
 	private WriteEntry wrEntr;
+	private RemoveEntry rmEntr;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -38,6 +40,7 @@ public class window {
 		rdEntr = new ReadEntry();
 		rdEntr.readEntry();
 		wrEntr = new WriteEntry();
+		rmEntr = new RemoveEntry();
 		initialize();
 
 	}
@@ -55,14 +58,19 @@ public class window {
 			items.add(new ListItem(entry.getKey(), entry.getValue()));
 		}
 
-		JTextPane textPane = new JTextPane();
+		JTextArea textPane = new JTextArea();
+		textPane.setLineWrap(true);
+		textPane.setWrapStyleWord(true);
+		textPane.getLineWrap();
+		
 		JList list = new JList(items);
 		list.setBackground(UIManager.getColor("Button.disabledForeground"));
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				JList list = (JList) evt.getSource();
-				if (evt.getClickCount() == 1) {
 
+				if (evt.getClickCount() == 1) {
+					rdEntr.readEntry();
 					// Double-click detected
 					int index = list.locationToIndex(evt.getPoint());
 					textPane.setText(rdEntr.getNormalText(index));
@@ -85,10 +93,10 @@ public class window {
 		ActionListener actSave = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String text = "<p><h1>" + list.getSelectedValue().toString() + "</h1>"; 
-				System.out.println(text);
-				//rdEntr.editEtrie(list.getSelectedIndex(), textPane.getText());
-				//wrEntr.writeMap(rdEntr.getEntries());
+				rmEntr.removeEntry(list.getSelectedIndex());
+				String p = wrEntr.coverText(list.getSelectedValue().toString(), textPane.getText());
+				rdEntr.setEntries(list.getSelectedIndex(), p);
+				wrEntr.writeMap(rdEntr.getEntries());
 			}
 		};
 
