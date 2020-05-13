@@ -18,6 +18,8 @@ import java.awt.BorderLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class Main {
 
@@ -56,16 +58,18 @@ public class Main {
 		frame = new JFrame();
 		items = new Vector<>();
 		frame.setBackground(Color.DARK_GRAY);
-		frame.setBounds(100, 100, 700, 400);
+		frame.setBounds(100, 100, 700, 527);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Note");
 		dynList = new DefaultListModel();
 		JTextArea textPane = new JTextArea();
+		textPane.setBounds(226, 36, 448, 441);
 		textPane.setLineWrap(true);
 		textPane.setWrapStyleWord(true);
 		textPane.getLineWrap();
 
 		list = new JList();
+		list.setBounds(24, 35, 178, 301);
 		list.setModel(dynList);
 		addItems(rdEntr.getEntries());
 
@@ -100,18 +104,29 @@ public class Main {
 				}
 			}
 		});
+		frame.getContentPane().setLayout(null);
 
-		frame.getContentPane().add(list, BorderLayout.WEST);
+		frame.getContentPane().add(list);
 
 		JButton saveNote = new JButton("Save Note");
-		saveNote.setBounds(100, 100, 100, 100);
+		saveNote.setBounds(24, 394, 178, 36);
 
 		frame.getContentPane().add(saveNote);
 		frame.getContentPane().add(saveNote, BorderLayout.SOUTH);
-		frame.getContentPane().add(textPane, BorderLayout.CENTER);
+		frame.getContentPane().add(textPane);
 
 		JButton addNoteBtn = new JButton("Add Note");
-		frame.getContentPane().add(addNoteBtn, BorderLayout.NORTH);
+		addNoteBtn.setBounds(24, 347, 178, 36);
+		frame.getContentPane().add(addNoteBtn);
+		
+		JButton rmNote = new JButton("Remove selected note");
+		rmNote.setBounds(24, 441, 178, 36);
+		frame.getContentPane().add(rmNote);
+		
+		JLabel lblNewLabel = new JLabel("List of notes");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNewLabel.setBounds(70, 10, 91, 14);
+		frame.getContentPane().add(lblNewLabel);
 
 		ActionListener actSave = new ActionListener() {
 			@Override
@@ -124,6 +139,16 @@ public class Main {
 			}
 		};
 
+		ActionListener actRemove = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				rmEntr.removeEntry(list.getSelectedIndex());
+				dynList.remove(list.getSelectedIndex());
+				textPane.setText("");
+			}
+		};
+
+		rmNote.addActionListener(actRemove);
 		saveNote.addActionListener(actSave);
 		addNoteBtn.addActionListener(actAdd);
 	}
@@ -142,5 +167,4 @@ public class Main {
 		dynList.add(dynList.size(), str);
 
 	}
-
 }
