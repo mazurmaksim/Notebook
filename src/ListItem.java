@@ -11,7 +11,11 @@ public class ListItem {
 		this.entry = entry;
 
 	}
-
+	
+	public int getKey() {
+		
+		return index;
+	}
 	@Override
 	public String toString() {
 

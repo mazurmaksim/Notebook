@@ -26,6 +26,7 @@ public class Main {
 	private WriteEntry wrEntr;
 	private RemoveEntry rmEntr;
 	private JList list;
+	private DefaultListModel dynList;
 	private Vector<ListItem> items;
 
 	public static void main(String[] args) {
@@ -58,14 +59,15 @@ public class Main {
 		frame.setBounds(100, 100, 700, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Note");
-
+		dynList = new DefaultListModel();
 		JTextArea textPane = new JTextArea();
 		textPane.setLineWrap(true);
 		textPane.setWrapStyleWord(true);
 		textPane.getLineWrap();
 
-		list = new JList(addItems(rdEntr.getEntries()));
-		JScrollPane objectsLP = new JScrollPane(list);
+		list = new JList();
+		list.setModel(dynList);
+		addItems(rdEntr.getEntries());
 
 		ActionListener actAdd = new ActionListener() {
 			@Override
@@ -74,13 +76,10 @@ public class Main {
 				String result = JOptionPane.showInputDialog("Add Entry", "");
 
 				if (!result.isEmpty()) {
-					rdEntr.setEntries(rdEntr.getEntries().size(), "<p><h1>" + result + "</h1></p>");
-					wrEntr.writeMap(rdEntr.getEntries());
-					addItems(rdEntr.getEntries());
-
+					addItems(result);
 				}
 				System.out.println(result);
-				updateList(list, items);
+
 			}
 
 		};
@@ -92,9 +91,12 @@ public class Main {
 
 				if (evt.getClickCount() == 1) {
 					rdEntr.readEntry();
-					// Double-click detected
 					int index = list.locationToIndex(evt.getPoint());
-					textPane.setText(rdEntr.getNormalText(index));
+					try {
+						textPane.setText(rdEntr.getNormalText(index));
+					} catch (NullPointerException e) {
+						textPane.setText("");
+					}
 				}
 			}
 		});
@@ -126,24 +128,18 @@ public class Main {
 		addNoteBtn.addActionListener(actAdd);
 	}
 
-	public void updateList(JList list, Vector<ListItem> objs)// your standard list update method
-	{
-		DefaultListModel listModel = (DefaultListModel) list.getModel();
-		// listModel.clear();
-
-		for (int i = 0; i < objs.size(); i++) {
-			listModel.addElement(objs.get(i).toString());
-		}
-		list.setModel(listModel);
-	}
-
-	private Vector<ListItem> addItems(Map<Integer, String> map) {
+	private void addItems(Map<Integer, String> map) {
 
 		for (Map.Entry<Integer, String> entry : map.entrySet()) {
-			items.add(new ListItem(entry.getKey(), entry.getValue()));
+			ListItem lsi = new ListItem(entry.getKey(), entry.getValue());
+			dynList.add(lsi.getKey(), lsi.toString());
 		}
 
-		return items;
+	}
+
+	private void addItems(String str) {
+
+		dynList.add(dynList.size(), str);
 
 	}
 
