@@ -88,6 +88,11 @@ public class Main {
 
 		};
 
+		JLabel captionLb = new JLabel("Select the notes");
+		captionLb.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		captionLb.setBounds(226, 0, 448, 34);
+		frame.getContentPane().add(captionLb);
+
 		list.setBackground(UIManager.getColor("Button.disabledForeground"));
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -97,8 +102,10 @@ public class Main {
 					rdEntr.readEntry();
 					int index = list.locationToIndex(evt.getPoint());
 					try {
+						captionLb.setText(dynList.get(index).toString() + " created: " + rdEntr.getCreateDate(index));
 						textPane.setText(rdEntr.getNormalText(index));
 					} catch (NullPointerException e) {
+						captionLb.setText("");
 						textPane.setText("");
 					}
 				}
@@ -127,7 +134,7 @@ public class Main {
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setBounds(70, 10, 91, 14);
 		frame.getContentPane().add(lblNewLabel);
-
+		
 		ActionListener actSave = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -142,9 +149,11 @@ public class Main {
 		ActionListener actRemove = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				captionLb.setText(dynList.get(list.getSelectedIndex()).toString() + " Removed saccesfully ");
 				rmEntr.removeEntry(list.getSelectedIndex());
 				dynList.remove(list.getSelectedIndex());
 				textPane.setText("");
+				
 			}
 		};
 
