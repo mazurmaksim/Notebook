@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -6,9 +7,15 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import javax.swing.JFrame;
 import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 
@@ -18,6 +25,8 @@ public class Main {
 	private ReadEntry rdEntr;
 	private WriteEntry wrEntr;
 	private RemoveEntry rmEntr;
+	private JList list;
+	private Vector<ListItem> items;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -44,22 +53,38 @@ public class Main {
 	private void initialize() {
 		int listIndex = -1;
 		frame = new JFrame();
+		items = new Vector<>();
 		frame.setBackground(Color.DARK_GRAY);
 		frame.setBounds(100, 100, 700, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Note");
 
-		Vector<ListItem> items = new Vector<>();
-		for (Map.Entry<Integer, String> entry : rdEntr.getEntries().entrySet()) {
-			items.add(new ListItem(entry.getKey(), entry.getValue()));
-		}
-
 		JTextArea textPane = new JTextArea();
 		textPane.setLineWrap(true);
 		textPane.setWrapStyleWord(true);
 		textPane.getLineWrap();
-		
-		JList list = new JList(items);
+
+		list = new JList(addItems(rdEntr.getEntries()));
+		JScrollPane objectsLP = new JScrollPane(list);
+
+		ActionListener actAdd = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				String result = JOptionPane.showInputDialog("Add Entry", "");
+
+				if (!result.isEmpty()) {
+					rdEntr.setEntries(rdEntr.getEntries().size(), "<p><h1>" + result + "</h1></p>");
+					wrEntr.writeMap(rdEntr.getEntries());
+					addItems(rdEntr.getEntries());
+
+				}
+				System.out.println(result);
+				updateList(list, items);
+			}
+
+		};
+
 		list.setBackground(UIManager.getColor("Button.disabledForeground"));
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -93,10 +118,33 @@ public class Main {
 				String p = wrEntr.coverText(list.getSelectedValue().toString(), textPane.getText());
 				rdEntr.setEntries(list.getSelectedIndex(), p);
 				wrEntr.writeMap(rdEntr.getEntries());
+
 			}
 		};
 
 		saveNote.addActionListener(actSave);
+		addNoteBtn.addActionListener(actAdd);
+	}
+
+	public void updateList(JList list, Vector<ListItem> objs)// your standard list update method
+	{
+		DefaultListModel listModel = (DefaultListModel) list.getModel();
+		// listModel.clear();
+
+		for (int i = 0; i < objs.size(); i++) {
+			listModel.addElement(objs.get(i).toString());
+		}
+		list.setModel(listModel);
+	}
+
+	private Vector<ListItem> addItems(Map<Integer, String> map) {
+
+		for (Map.Entry<Integer, String> entry : map.entrySet()) {
+			items.add(new ListItem(entry.getKey(), entry.getValue()));
+		}
+
+		return items;
+
 	}
 
 }
