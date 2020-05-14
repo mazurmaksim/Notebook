@@ -61,7 +61,7 @@ public class WriteEntry {
 	}
 
 	public static void main(String[] args) {
-
+/*
 		WriteEntry we = new WriteEntry();
 		we.writeEntry("Убрать всю територию за гаражами", "День уборки");
 		we.writeEntry("Забрать холодильник и отнести на 10 етаж", "Забрать холодильник");
@@ -69,5 +69,6 @@ public class WriteEntry {
 		we.writeEntry("Переделать все программы", "Куча дел");
 		we.writeEntry("У лукоморья дуб зеленый", "Выучить стих");
 		we.writeEntry("Список покупок", "Покупки");
+	*/
 	}
 }

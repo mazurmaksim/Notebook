@@ -59,6 +59,8 @@ public class Main {
 		items = new Vector<>();
 		frame.setBackground(Color.DARK_GRAY);
 		frame.setBounds(100, 100, 700, 527);
+		frame.setSize(700, 527);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Note");
 		dynList = new DefaultListModel();
@@ -72,15 +74,24 @@ public class Main {
 		list.setBounds(24, 35, 178, 301);
 		list.setModel(dynList);
 		addItems(rdEntr.getEntries());
+		JScrollPane listScrollPane = new JScrollPane(list);
 
+		frame.add(listScrollPane, BorderLayout.CENTER);
+		list.setSelectedIndex(0);
 		ActionListener actAdd = new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				String result = JOptionPane.showInputDialog("Add Entry", "");
+				String result = JOptionPane.showInputDialog(frame, "Please enter entry title",
+						"Please enter entry title", JOptionPane.DEFAULT_OPTION);
 
-				if (!result.isEmpty()) {
-					addItems(result);
+				try {
+					if (!result.isEmpty()) {
+						addItems(result);
+					}
+				} catch (NullPointerException ef) {
+
 				}
 				System.out.println(result);
 
@@ -125,35 +136,45 @@ public class Main {
 		JButton addNoteBtn = new JButton("Add Note");
 		addNoteBtn.setBounds(24, 347, 178, 36);
 		frame.getContentPane().add(addNoteBtn);
-		
+
 		JButton rmNote = new JButton("Remove selected note");
 		rmNote.setBounds(24, 441, 178, 36);
 		frame.getContentPane().add(rmNote);
-		
+
 		JLabel lblNewLabel = new JLabel("List of notes");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel.setBounds(70, 10, 91, 14);
 		frame.getContentPane().add(lblNewLabel);
-		
+
 		ActionListener actSave = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				rmEntr.removeEntry(list.getSelectedIndex());
-				String p = wrEntr.coverText(list.getSelectedValue().toString(), textPane.getText());
-				rdEntr.setEntries(list.getSelectedIndex(), p);
-				wrEntr.writeMap(rdEntr.getEntries());
 
+				try {
+					rmEntr.removeEntry(list.getSelectedIndex());
+					String p = wrEntr.coverText(list.getSelectedValue().toString(), textPane.getText());
+					rdEntr.setEntries(list.getSelectedIndex(), p);
+					wrEntr.writeMap(rdEntr.getEntries());
+				} catch (NullPointerException f) {
+					captionLb.setText("No one note select");
+
+				}
 			}
 		};
 
 		ActionListener actRemove = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				captionLb.setText(dynList.get(list.getSelectedIndex()).toString() + " Removed saccesfully ");
-				rmEntr.removeEntry(list.getSelectedIndex());
-				dynList.remove(list.getSelectedIndex());
-				textPane.setText("");
-				
+				try {
+					captionLb.setText(dynList.get(list.getSelectedIndex()).toString() + " Removed saccesfully ");
+					rmEntr.removeEntry(list.getSelectedIndex());
+					dynList.remove(list.getSelectedIndex());
+					textPane.setText("");
+				} catch (ArrayIndexOutOfBoundsException f) {
+					captionLb.setText("No one note select");
+
+				}
+
 			}
 		};
 
