@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 import java.awt.HeadlessException;
+import java.awt.TextComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,6 +34,7 @@ public class Main {
 	private Vector<ListItem> items;
 	private JTextArea textPane;
 	private JButton saveNote;
+	private JButton addNoteBtn;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -97,12 +99,22 @@ public class Main {
 						"Please enter entry title", JOptionPane.DEFAULT_OPTION);
 
 				try {
-					if (!result.isEmpty()) {
+					if (!result.isEmpty() && !rdEntr.getAllentries().containsKey(result)) {
 						addItems(result);
 						rdEntr.setEntries(result, "");
 						textPane.setBackground(Color.WHITE);
 						textPane.setEnabled(true);
 						saveNote.setEnabled(true);
+					}
+
+					else if (!result.isEmpty() && rdEntr.getAllentries().containsKey(result)) {
+
+						int result1 = JOptionPane.showConfirmDialog(frame,
+								"The Entry " + "\"" + result + "\"" + " is Present. Try again!", "Error",
+								JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_OPTION);
+						 if (result1 == JOptionPane.OK_OPTION) {
+							 addNoteBtn.doClick();
+						    }
 					}
 				} catch (NullPointerException ef) {
 
@@ -150,7 +162,7 @@ public class Main {
 		frame.getContentPane().add(saveNote, BorderLayout.SOUTH);
 		frame.getContentPane().add(textPane);
 
-		JButton addNoteBtn = new JButton("Add Note");
+		addNoteBtn = new JButton("Add Note");
 		addNoteBtn.setBounds(24, 347, 178, 36);
 		frame.getContentPane().add(addNoteBtn);
 
@@ -168,7 +180,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					
+
 					rdEntr.setEntries(dynList.get(list.getSelectedIndex()).toString(), textPane.getText());
 					wrEntr.writeMap(rdEntr.getAllentries());
 					// saveNote.setEnabled(false);
@@ -176,7 +188,7 @@ public class Main {
 				} catch (NullPointerException f) {
 					captionLb.setText("No one note select");
 
-				} catch ( ArrayIndexOutOfBoundsException fg) {
+				} catch (ArrayIndexOutOfBoundsException fg) {
 					wrEntr.writeMap(rdEntr.getAllentries());
 				}
 			}
@@ -205,6 +217,7 @@ public class Main {
 		rmNote.addActionListener(actRemove);
 		saveNote.addActionListener(actSave);
 		addNoteBtn.addActionListener(actAdd);
+		// textPane.addAncestorListener(txtEvent);
 	}
 
 	private void addItems(Map<String, String> map) {
