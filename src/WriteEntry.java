@@ -11,12 +11,13 @@ public class WriteEntry {
 
 	private final static String FILEPATH = "lib\\db.bin";
 
-	public void writeMap(Map<Integer, String> entrie) {
+	public void writeMap(Map<String, String> entrie) {
+		
 		String tmp = "";
 
-		for (Map.Entry<Integer, String> str : entrie.entrySet()) {
-
-			tmp += str.getValue();
+		for (Map.Entry<String, String> str : entrie.entrySet()) {
+			
+			tmp += coverText( str.getKey() ,str.getValue());
 
 		}
 
@@ -32,13 +33,11 @@ public class WriteEntry {
 
 	}
 
-
 	public String coverText(String caption, String text) {
 		
 		Date today = Calendar.getInstance().getTime();
-		return "<p><h1>" + caption + "</h1>" + text + "<create>" + today + "</create></p>";
-
 		
+		return ("<p><h1>" + caption + "</h1>" + text + "<create>" + today + "</create></p>"+"\n");
 		
 	}
 	
@@ -61,14 +60,14 @@ public class WriteEntry {
 	}
 
 	public static void main(String[] args) {
-/*
+
 		WriteEntry we = new WriteEntry();
 		we.writeEntry("Убрать всю територию за гаражами", "День уборки");
 		we.writeEntry("Забрать холодильник и отнести на 10 етаж", "Забрать холодильник");
 		we.writeEntry("Ехать за город на рыбалку", "Если хорошая погода");
 		we.writeEntry("Переделать все программы", "Куча дел");
 		we.writeEntry("У лукоморья дуб зеленый", "Выучить стих");
-		we.writeEntry("Список покупок", "Покупки");
-	*/
+		we.writeEntry("соль, сахар, хлеб", "Список покупок");
+	
 	}
 }

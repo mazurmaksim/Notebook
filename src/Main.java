@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.TextEvent;
+import java.awt.event.TextListener;
 import java.util.*;
 import javax.swing.JFrame;
 import java.awt.Color;
@@ -26,10 +28,11 @@ public class Main {
 	private JFrame frame;
 	private ReadEntry rdEntr;
 	private WriteEntry wrEntr;
-	private RemoveEntry rmEntr;
 	private JList list;
 	private DefaultListModel dynList;
 	private Vector<ListItem> items;
+	private JTextArea textPane;
+	private JButton saveNote;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -45,16 +48,12 @@ public class Main {
 	}
 
 	public Main() {
-		rdEntr = new ReadEntry();
-		rdEntr.readEntry();
-		wrEntr = new WriteEntry();
-		rmEntr = new RemoveEntry();
+
 		initialize();
 
 	}
 
 	private void initialize() {
-		int listIndex = -1;
 		frame = new JFrame();
 		items = new Vector<>();
 		frame.setBackground(Color.DARK_GRAY);
@@ -64,20 +63,31 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Note");
 		dynList = new DefaultListModel();
-		JTextArea textPane = new JTextArea();
+		textPane = new JTextArea();
 		textPane.setBounds(226, 36, 448, 441);
 		textPane.setLineWrap(true);
 		textPane.setWrapStyleWord(true);
 		textPane.getLineWrap();
-
+		rdEntr = new ReadEntry();
+		wrEntr = new WriteEntry();
 		list = new JList();
 		list.setBounds(24, 35, 178, 301);
 		list.setModel(dynList);
-		addItems(rdEntr.getEntries());
-		JScrollPane listScrollPane = new JScrollPane(list);
-
-		frame.add(listScrollPane, BorderLayout.CENTER);
+		addItems(rdEntr.getAllentries());
 		list.setSelectedIndex(0);
+
+		if (!rdEntr.getAllentries().isEmpty()) {
+
+			textPane.setText(rdEntr.getAllentries().get(dynList.elementAt(0).toString()));
+
+		}
+
+		if (rdEntr.getAllentries().isEmpty()) {
+			textPane.setBackground(UIManager.getColor("Button.disabledForeground"));
+			textPane.setEnabled(false);
+		} else
+			textPane.setEnabled(true);
+
 		ActionListener actAdd = new ActionListener() {
 
 			@Override
@@ -89,6 +99,10 @@ public class Main {
 				try {
 					if (!result.isEmpty()) {
 						addItems(result);
+						rdEntr.setEntries(result, "");
+						textPane.setBackground(Color.WHITE);
+						textPane.setEnabled(true);
+						saveNote.setEnabled(true);
 					}
 				} catch (NullPointerException ef) {
 
@@ -110,11 +124,12 @@ public class Main {
 				JList list = (JList) evt.getSource();
 
 				if (evt.getClickCount() == 1) {
-					rdEntr.readEntry();
-					int index = list.locationToIndex(evt.getPoint());
+					System.out.println("Size map: " + rdEntr.getAllentries());
+
 					try {
-						captionLb.setText(dynList.get(index).toString() + " created: " + rdEntr.getCreateDate(index));
-						textPane.setText(rdEntr.getNormalText(index));
+						captionLb.setText(list.getSelectedValue().toString());// " created: " +
+																				// rdEntr.getCreateDate(list.getSelectedValue().toString()));
+						textPane.setText(rdEntr.getAllentries().get(list.getSelectedValue().toString()));
 					} catch (NullPointerException e) {
 						captionLb.setText("");
 						textPane.setText("");
@@ -122,12 +137,14 @@ public class Main {
 				}
 			}
 		});
+		// list.setFocusTraversalPolicyProvider(true);
 		frame.getContentPane().setLayout(null);
 
 		frame.getContentPane().add(list);
 
-		JButton saveNote = new JButton("Save Note");
+		saveNote = new JButton("Save Note");
 		saveNote.setBounds(24, 394, 178, 36);
+		// saveNote.setEnabled(false);
 
 		frame.getContentPane().add(saveNote);
 		frame.getContentPane().add(saveNote, BorderLayout.SOUTH);
@@ -151,10 +168,10 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					rmEntr.removeEntry(list.getSelectedIndex());
-					String p = wrEntr.coverText(list.getSelectedValue().toString(), textPane.getText());
-					rdEntr.setEntries(list.getSelectedIndex(), p);
-					wrEntr.writeMap(rdEntr.getEntries());
+					rdEntr.setEntries(dynList.get(list.getSelectedIndex()).toString(), textPane.getText());
+					wrEntr.writeMap(rdEntr.getAllentries());
+					// saveNote.setEnabled(false);
+
 				} catch (NullPointerException f) {
 					captionLb.setText("No one note select");
 
@@ -166,13 +183,17 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+
 					captionLb.setText(dynList.get(list.getSelectedIndex()).toString() + " Removed saccesfully ");
-					rmEntr.removeEntry(list.getSelectedIndex());
+					rdEntr.getAllentries().remove(dynList.get(list.getSelectedIndex()).toString());
 					dynList.remove(list.getSelectedIndex());
+					list.setSelectedIndex(list.getSelectedIndex() + 1);
 					textPane.setText("");
+
 				} catch (ArrayIndexOutOfBoundsException f) {
 					captionLb.setText("No one note select");
-
+					textPane.setText("");
+					textPane.setEnabled(false);
 				}
 
 			}
@@ -183,11 +204,11 @@ public class Main {
 		addNoteBtn.addActionListener(actAdd);
 	}
 
-	private void addItems(Map<Integer, String> map) {
+	private void addItems(Map<String, String> map) {
 
-		for (Map.Entry<Integer, String> entry : map.entrySet()) {
-			ListItem lsi = new ListItem(entry.getKey(), entry.getValue());
-			dynList.add(lsi.getKey(), lsi.toString());
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			ListItem lsi = new ListItem(entry.getKey());
+			dynList.addElement(lsi.toString());
 		}
 
 	}
@@ -197,4 +218,5 @@ public class Main {
 		dynList.add(dynList.size(), str);
 
 	}
+
 }

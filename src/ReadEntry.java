@@ -9,9 +9,22 @@ public class ReadEntry {
 	private static final String PATH_TO_DB = "lib\\db.bin";
 	private String entry = "";
 	private Map<Integer, String> entries = new TreeMap<>();
+	private Map<String, String> allentries = new TreeMap<>();
 	private int count;
 
-	public Map<Integer, String> readEntry() {
+	public ReadEntry() {
+
+		readEntry();
+
+		if (!entries.isEmpty()) {
+
+			SplitUpStr();
+
+		}
+
+	}
+
+	public void readEntry() {
 
 		count = 0;
 
@@ -27,6 +40,7 @@ public class ReadEntry {
 					entry += (char) c;
 
 				}
+
 				if (entry.endsWith(MARKEREND)) {
 
 					entries.put(count++, entry);
@@ -42,21 +56,43 @@ public class ReadEntry {
 		}
 
 		System.out.println("Read " + count + " Entries");
-		return entries;
 
 	}
 
-	public Map<Integer, String> getEntries() {
+	public void setEntries(String key, String value) {
+		
+			allentries.put(key, value);
+			System.out.println(allentries);
+	}
 
-		return entries;
+	public void SplitUpStr() {
+
+		for (Map.Entry<Integer, String> str : entries.entrySet()) {
+
+			allentries.put( getTitle(str.getValue()), getNormalText(str.getKey()) );
+
+		}
 
 	}
 
-	public void setEntries(int index, String value) {
+	public Map<String, String> getAllentries() {
 
-		entries.put(index, value);
+		return allentries;
 
 	}
+
+	public String getTitle(String str) {
+
+		String tmp = "";
+		final Pattern pattern = Pattern.compile("<h1>(.+?)</h1>");
+		final Matcher matcher = pattern.matcher(str);
+		matcher.find();
+		tmp = matcher.group(1);
+
+		return tmp;
+
+	}
+
 
 	public String getNormalText(int index) {
 
@@ -73,9 +109,8 @@ public class ReadEntry {
 
 	}
 
-	public String getCreateDate(int index) {
-
-		String gentry = entries.get(index);
+	public String getCreateDate(String title) {
+		String gentry = allentries.get(title);
 		String tmp = "";
 		final Pattern pattern = Pattern.compile("<create>(.+?)</create>");
 		final Matcher matcher = pattern.matcher(gentry);
@@ -90,7 +125,7 @@ public class ReadEntry {
 	public static void main(String[] args) {
 
 		ReadEntry re = new ReadEntry();
-		System.out.println(re.readEntry());
+		System.out.println(re.getAllentries());
 
 	}
 
