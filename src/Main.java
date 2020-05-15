@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.JLabel;
 import java.awt.Font;
+import javax.swing.ListSelectionModel;
 
 public class Main {
 
@@ -35,6 +36,7 @@ public class Main {
 	private JTextArea textPane;
 	private JButton saveNote;
 	private JButton addNoteBtn;
+	private JScrollPane scrollPane;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -72,12 +74,10 @@ public class Main {
 		textPane.getLineWrap();
 		rdEntr = new ReadEntry();
 		wrEntr = new WriteEntry();
-		list = new JList();
-		list.setBounds(24, 35, 178, 301);
-		list.setModel(dynList);
 		addItems(rdEntr.getAllentries());
-		list.setSelectedIndex(0);
 
+		
+		
 		if (!rdEntr.getAllentries().isEmpty()) {
 
 			textPane.setText(rdEntr.getAllentries().get(dynList.elementAt(0).toString()));
@@ -129,14 +129,25 @@ public class Main {
 		captionLb.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		captionLb.setBounds(226, 0, 448, 34);
 		frame.getContentPane().add(captionLb);
-
+		frame.getContentPane().setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(24, 35, 178, 301);
+		frame.getContentPane().add(scrollPane);
+		list = new JList();
+		list.setBorder(null);
+		scrollPane.setViewportView(list);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setModel(dynList);
+		list.setSelectedIndex(0);
 		list.setBackground(UIManager.getColor("Button.disabledForeground"));
+		
 		list.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
 				JList list = (JList) evt.getSource();
 
 				if (evt.getClickCount() == 1) {
-					System.out.println("Size map: " + rdEntr.getAllentries());
+					System.out.println("Map: " + rdEntr.getAllentries());
 
 					try {
 						captionLb.setText(list.getSelectedValue().toString());// " created: " +
@@ -144,24 +155,18 @@ public class Main {
 						textPane.setText(rdEntr.getAllentries().get(list.getSelectedValue().toString()));
 					} catch (NullPointerException e) {
 						captionLb.setText("");
-						textPane.setText("");
+						//textPane.setText("");
 					}
 				}
 			}
 		});
-		// list.setFocusTraversalPolicyProvider(true);
-		frame.getContentPane().setLayout(null);
-
-		frame.getContentPane().add(list);
 
 		saveNote = new JButton("Save Note");
 		saveNote.setBounds(24, 394, 178, 36);
-		// saveNote.setEnabled(false);
 
 		frame.getContentPane().add(saveNote);
 		frame.getContentPane().add(saveNote, BorderLayout.SOUTH);
 		frame.getContentPane().add(textPane);
-
 		addNoteBtn = new JButton("Add Note");
 		addNoteBtn.setBounds(24, 347, 178, 36);
 		frame.getContentPane().add(addNoteBtn);
@@ -183,7 +188,6 @@ public class Main {
 
 					rdEntr.setEntries(dynList.get(list.getSelectedIndex()).toString(), textPane.getText());
 					wrEntr.writeMap(rdEntr.getAllentries());
-					// saveNote.setEnabled(false);
 
 				} catch (NullPointerException f) {
 					captionLb.setText("No one note select");
@@ -217,7 +221,6 @@ public class Main {
 		rmNote.addActionListener(actRemove);
 		saveNote.addActionListener(actSave);
 		addNoteBtn.addActionListener(actAdd);
-		// textPane.addAncestorListener(txtEvent);
 	}
 
 	private void addItems(Map<String, String> map) {
@@ -234,5 +237,4 @@ public class Main {
 		dynList.add(dynList.size(), str);
 
 	}
-
 }
