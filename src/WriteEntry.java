@@ -14,13 +14,14 @@ public class WriteEntry {
 	public void writeMap(Map<String, String> entrie) {
 		
 		String tmp = "";
-
+		if(!entrie.isEmpty()) {
 		for (Map.Entry<String, String> str : entrie.entrySet()) {
 			
 			tmp += coverText( str.getKey() ,str.getValue());
 
 		}
-
+		}
+		else tmp = "";
 		try {
 			Files.write(Paths.get(FILEPATH), tmp.getBytes());
 

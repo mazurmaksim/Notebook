@@ -168,6 +168,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
+					
 					rdEntr.setEntries(dynList.get(list.getSelectedIndex()).toString(), textPane.getText());
 					wrEntr.writeMap(rdEntr.getAllentries());
 					// saveNote.setEnabled(false);
@@ -175,6 +176,8 @@ public class Main {
 				} catch (NullPointerException f) {
 					captionLb.setText("No one note select");
 
+				} catch ( ArrayIndexOutOfBoundsException fg) {
+					wrEntr.writeMap(rdEntr.getAllentries());
 				}
 			}
 		};
