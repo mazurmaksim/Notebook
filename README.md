@@ -9,3 +9,4 @@ Notebook features:
 3. Adding a new entry
 
 When you add or edit a record, the date of the change is saved. File " / db.bin"
+![alt text](https://github.com/mazurmaksim/Notebook/blob/master/Notes.jpg)
