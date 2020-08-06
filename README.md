@@ -8,4 +8,4 @@ Notebook features:
 2. Delete a record
 3. Adding a new entry
 
-When you add or edit a record, the date of the change is saved. File "lib / db.bin"
+When you add or edit a record, the date of the change is saved. File " / db.bin"
